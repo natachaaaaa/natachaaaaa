@@ -1,7 +1,7 @@
 - 👋 Hi, I’m @Nath81210
 - 👀 I’m interested in Bukkit/Spigot developpement.
 - 🌱 I’m currently learning Java.
-- 💞️ I’m looking to collaborate on VariaCraft
+- 💞️ I work on VariaCraft FR
 - 📫 My contact : AfterNath#0001
 
 <!---
