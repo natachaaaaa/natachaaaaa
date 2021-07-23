@@ -6,7 +6,7 @@
 
 ### Spotify
 
-[<img src="https://now-playing-codestackr.vercel.app/api/spotify-playing" alt="AfterNath Spotify Playing" width="350" />](https://open.spotify.com/user/sidobrillant81)
+[<img src="https://now-playing-codestackr.vercel.app/api/spotify-playing" alt="AfterNath Spotify Playing" width="350" />](https://open.spotify.com/playlist/19ENMIsgNup3YriYW2pn9H?si=3be5c60ba6d946d0)
 
 ### Contactez-moi:
 
