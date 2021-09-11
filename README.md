@@ -19,6 +19,7 @@
 <br />
 <br />
 
+###:zap: Statistiques
 
 <details>
   <summary>:zap: Statistiques</summary>
