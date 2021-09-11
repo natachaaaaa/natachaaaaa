@@ -4,12 +4,6 @@
 - 👯 Pourquoi pas travailler avec des gens ?
 - ⚡ J'ai apris les bases du python en 5h
 
-### Spotify
-
-[<img src="https://now-playing-codestackr.vercel.app/api/spotify-playing" alt="AfterNath Spotify Playing" width="350" />](https://open.spotify.com/playlist/19ENMIsgNup3YriYW2pn9H?si=3be5c60ba6d946d0)
-
-<br />
-
 ### Languages:
 
 [<img align="left" alt="Visual Studio Code" width="26px" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/visual-studio-code/visual-studio-code.png" />][all]
