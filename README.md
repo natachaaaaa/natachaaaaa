@@ -20,12 +20,6 @@
 <br />
 
 ### :zap: Statistiques
-
-<details>
-  <summary>:zap: Statistiques</summary>
-
-  [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=AfterNath&theme=synthwave)](https://github.com/anuraghazra/github-readme-stats)
-
-</details>
+[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=AfterNath&theme=synthwave)](https://github.com/anuraghazra/github-readme-stats)
 
 [all]: https://discord.gg/TmN2xMKBv8
