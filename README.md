@@ -1,5 +1,5 @@
 <h1 align="center">Salut 👋 Je suis AfterNath</h1>
-- 💬 Me contacter ```</AfterNath>#9201```
+- 💬 Me contacter **AfterNath#9201**
 
 - 📫 Mon e-mail **afternathdevelopement@gmail.com**
 
