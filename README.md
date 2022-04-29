@@ -17,6 +17,9 @@
 
 - 📫 How to reach me **AfterNath#8086**
 
+
+<h3 align="left">Spotify Listening:</h3>
+
 [![Spotify](https://spotifyrm.vercel.app/api/spotify)](https://open.spotify.com/user/AfterNath)
 
 <h3 align="left">Connect with me:</h3>
