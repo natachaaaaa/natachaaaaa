@@ -5,7 +5,7 @@
 
 - 🔭 I’m currently working on **PhenixHosting**
 
-- 🌱 I’m currently learning **PHP & C++**
+- 🌱 I’m currently learning **PHP & Docker**
 
 - 👯 I’m looking to collaborate on **ESX Project**
 
