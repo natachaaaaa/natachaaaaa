@@ -1,4 +1,4 @@
-<a href="https://discord.com/channels/@me/1092845417231810580"> <img src="https://discord.c99.nl/widget/theme-1/967773487450173490.png" alt="Discord" class="center">
+<a href="https://discord.com/channels/@me/1092845417231810580"> <img src="https://discord.c99.nl/widget/theme-1/967773487450173490.png" alt="Discord"  display="block" margin-left="auto" margin-right="auto" width= "50%">
 
 
 <h1 align="center">Hi 👋, I'm AfterNath</h1>
