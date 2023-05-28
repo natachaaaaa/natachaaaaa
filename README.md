@@ -1,3 +1,7 @@
+<link rel="stylesheet" type="text/css" href="readme.css">
+
+
+
 <a href="https://discord.com/channels/@me/1092845417231810580"> <img src="https://discord.c99.nl/widget/theme-1/967773487450173490.png" alt="Discord"  class="center">
 
 
