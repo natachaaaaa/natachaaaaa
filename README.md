@@ -1,3 +1,6 @@
+<a href="https://discord.com/channels/@me/1092845417231810580"> <img src="https://discord.c99.nl/widget/theme-1/967773487450173490.png" alt="contact mee">
+
+
 <h1 align="center">Hi 👋, I'm AfterNath</h1>
 <p align="left"> <img src="https://komarev.com/ghpvc/?username=afternath&label=Profile%20views&color=720481&style=flat" alt="afternath" /> </p>
 
