@@ -20,7 +20,7 @@
 <p align="left">
 <a href="https://twitter.com/its_afternath" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/twitter.svg" alt="its_afternath" height="30" width="40" /></a>
 <a href="https://instagram.com/afternath_sql" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/instagram.svg" alt="afternath_sql" height="30" width="40" /></a>
-<a href="https://discord.gg/eGWXHqSN" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/discord.svg" alt="eGWXHqSN" height="30" width="40" /></a>
+<a href="https://discord.gg/resistancerp" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/discord.svg" alt="eGWXHqSN" height="30" width="40" /></a>
 </p>
 
 <a href="https://discord.com/channels/@me/1092845417231810580"> <img src="https://discord.c99.nl/widget/theme-1/967773487450173490.png" alt="Discord"  class="center">
