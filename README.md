@@ -6,10 +6,22 @@
 
 <h1 align="center">Hello world, i'm <a href="https://nathancombes.ovh">Nathan C. </a>!</h1>
 
-<h3 align="center">Welcome to my GitHub page :3</h3>
+<p align="center">
+  <p align="center">
+    <a href="https://nathancombes.ovh">
+      <img src="https://skillicons.dev/icons?i=js,html,laravel,py,php,c" alt="Banner">
+    </a>
+    <br/>
+    <a href="https://nathancombes.ovh">
+      <img src="https://skillicons.dev/icons?i=nginx,mysql,linux,docker,grafana,cloudflare" alt="Banner">
+    </a>
+  </p>
+</p>
+
 
 <p align="center">
   <a href="https://github.com/natachaaaaa"><img src="https://github-readme-stats.vercel.app/api?username=natachaaaaa&hide_border=false&show_icons=true" alt="natachaaaaa's github stats"></a>
 <br/>
   <img src="https://profile-counter.glitch.me/AfterNath/count.svg" alt="Banner">
 </p>
+
