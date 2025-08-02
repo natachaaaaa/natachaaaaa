@@ -17,11 +17,3 @@
     </a>
   </p>
 </p>
-
-
-<p align="center">
-  <a href="https://github.com/natachaaaaa"><img src="https://github-readme-stats.vercel.app/api?username=natachaaaaa&hide_border=false&show_icons=true" alt="natachaaaaa's github stats"></a>
-<br/>
-  <img src="https://profile-counter.glitch.me/AfterNath/count.svg" alt="Banner">
-</p>
-
