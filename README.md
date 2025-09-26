@@ -4,6 +4,8 @@
   </a>
 </p>
 
+<iframe title="deezer-widget" src="https://widget.deezer.com/widget/dark/playlist/5113955924" width="100%" height="300" frameborder="0" allowtransparency="true" allow="encrypted-media; clipboard-write"></iframe>
+
 <h1 align="center">Hello world, i'm <a href="#">Nathan C. </a>!</h1>
 
 <p align="center">
