@@ -9,7 +9,7 @@
 <p align="center">
   <p align="center">
     <a href="https://nathancombes.ovh">
-      <img src="https://skillicons.dev/icons?i=js,html,laravel,py,php,c" alt="Banner">
+      <img src="https://skillicons.dev/icons?i=js,html,laravel,py,php,c,debian" alt="Banner">
     </a>
     <br/>
     <a href="#">
