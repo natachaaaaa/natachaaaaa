@@ -13,7 +13,7 @@
     </a>
     <br/>
     <a href="#">
-      <img src="https://skillicons.dev/icons?i=nginx,mysql,linux,docker,grafana,cloudflare" alt="Banner">
+      <img src="https://skillicons.dev/icons?i=vuejs,nginx,mysql,linux,docker,grafana,cloudflare" alt="Banner">
     </a>
   </p>
 </p>
