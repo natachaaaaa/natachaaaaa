@@ -20,7 +20,7 @@
   ],
   "stack": {
     "LANGAGES": [["c", "C"], ["cplusplus", "C++"], ["typescript", "TypeScript"], ["javascript", "JavaScript"], ["python", "Python"], ["php", "PHP"]],
-    "WEB": [["laravel", "Laravel"], ["vuedotjs", "Vue.js"], ["nextdotjs", "Next.js"]],
+    "WEB": [["laravel", "Laravel"], ["vuedotjs", "Vue.js"], ["nuxtdotjs", "Nuxt.js"], ["nextdotjs", "Next.js"], ["drupal", "Drupal"], ["wordpress", "WordPress"]],
     "INFRA": [["debian", "Debian"], ["docker", "Docker"], ["nginx", "Nginx"], ["mysql", "MySQL"], ["grafana", "Grafana"], ["cloudflare", "Cloudflare"]]
   }
 }

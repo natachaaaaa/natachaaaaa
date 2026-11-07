@@ -21,7 +21,7 @@
 <img src="assets/stack/g-langages.svg" alt="LANGAGES" height="44"><br>
 <img src="assets/stack/c.svg" alt="C" height="44"><img src="assets/stack/cplusplus.svg" alt="C++" height="44"><img src="assets/stack/typescript.svg" alt="TypeScript" height="44"><img src="assets/stack/javascript.svg" alt="JavaScript" height="44"><img src="assets/stack/python.svg" alt="Python" height="44"><img src="assets/stack/php.svg" alt="PHP" height="44"><br>
 <img src="assets/stack/g-web.svg" alt="WEB" height="44"><br>
-<img src="assets/stack/laravel.svg" alt="Laravel" height="44"><img src="assets/stack/vuedotjs.svg" alt="Vue.js" height="44"><img src="assets/stack/nextdotjs.svg" alt="Next.js" height="44"><br>
+<img src="assets/stack/laravel.svg" alt="Laravel" height="44"><img src="assets/stack/vuedotjs.svg" alt="Vue.js" height="44"><img src="assets/stack/nuxtdotjs.svg" alt="Nuxt.js" height="44"><img src="assets/stack/nextdotjs.svg" alt="Next.js" height="44"><img src="assets/stack/drupal.svg" alt="Drupal" height="44"><img src="assets/stack/wordpress.svg" alt="WordPress" height="44"><br>
 <img src="assets/stack/g-infra.svg" alt="INFRA" height="44"><br>
 <img src="assets/stack/debian.svg" alt="Debian" height="44"><img src="assets/stack/docker.svg" alt="Docker" height="44"><img src="assets/stack/nginx.svg" alt="Nginx" height="44"><img src="assets/stack/mysql.svg" alt="MySQL" height="44"><img src="assets/stack/grafana.svg" alt="Grafana" height="44"><img src="assets/stack/cloudflare.svg" alt="Cloudflare" height="44"><br>
 
