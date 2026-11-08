@@ -16,7 +16,7 @@
 <img src="assets/t-forks.svg" alt="Forks" width="100%">
 
 <a href="https://github.com/natachaaaaa/dither-guy"><img src="assets/card-dither-guy.svg" alt="dither-guy : Logiciel de dithering d&#x27;images en Python, inspiré de Dither Boy." width="100%"></a>
-<a href="https://github.com/natachaaaaa/sentinel-tickets-glpi"><img src="assets/card-sentinel-tickets-glpi.svg" alt="sentinel-tickets-glpi : Fork de Sentinel Tickets pour relier un système de tickets Discord à GLPI. En cours." width="100%"></a>
+<a href="https://github.com/natachaaaaa/eggs"><img src="assets/card-eggs.svg" alt="eggs : Service eggs for the pterodactyl panel" width="100%"></a>
 
 <img src="assets/t-stack.svg" alt="Stack" width="100%">
 

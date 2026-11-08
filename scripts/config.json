@@ -9,20 +9,56 @@
   "since": "2021",
   "focus": "C · C++",
   "bio": "Développeur basé en France. En ce moment j'apprends le C et le C++ (souhaitez-moi bonne chance) ; à côté, je fais du web, un peu d'infra auto-hébergée et des projets rétro qui clignotent.",
-  "projects": [
-    {"repo": "capri-web", "desc": "Capri, la construction de personnalité d'Edgerunners 2, dans un onglet du navigateur : animée, à voix haute, avec outils MCP. Tout reste en local."},
-    {"repo": "JARVIS", "desc": "Assistant vocal façon J.A.R.V.I.S. dans le navigateur, en Next.js, pensé pour la veille sécurité : CVE et exploits du moment, en direct."},
-    {"repo": "crt-page", "desc": "Effet d'écran CRT rétro en JavaScript vanilla et GSAP : scanlines, scintillement, distorsion et bavure lumineuse."},
-    {"repo": "C_tres_laid", "desc": "Mes entraînements en C. « C très laid », tu l'as le jeu de mots ?"},
-    {"repo": "Modustry", "desc": "AfterNath Modustry : un multimod pour le jeu Mindustry."}
-  ],
-  "forks": [
-    {"repo": "dither-guy", "origin": "manoelpiovesan/dither-guy", "desc": "Logiciel de dithering d'images en Python, inspiré de Dither Boy."},
-    {"repo": "sentinel-tickets-glpi", "desc": "Fork de Sentinel Tickets pour relier un système de tickets Discord à GLPI. En cours."}
-  ],
+  "max_projects": 6,
+  "max_forks": 4,
+  "repos": {
+    "capri-web": {
+      "desc": "Capri, la construction de personnalité d'Edgerunners 2, dans un onglet du navigateur : animée, à voix haute, avec outils MCP. Tout reste en local."
+    },
+    "JARVIS": {
+      "desc": "Assistant vocal façon J.A.R.V.I.S. dans le navigateur, en Next.js, pensé pour la veille sécurité : CVE et exploits du moment, en direct."
+    },
+    "crt-page": {
+      "desc": "Effet d'écran CRT rétro en JavaScript vanilla et GSAP : scanlines, scintillement, distorsion et bavure lumineuse."
+    },
+    "C_tres_laid": {
+      "desc": "Mes entraînements en C. « C très laid », tu l'as le jeu de mots ?"
+    },
+    "Modustry": {
+      "desc": "AfterNath Modustry : un multimod pour le jeu Mindustry."
+    },
+    "dither-guy": {
+      "origin": "manoelpiovesan/dither-guy",
+      "desc": "Logiciel de dithering d'images en Python, inspiré de Dither Boy."
+    },
+    "sentinel-tickets-glpi": {
+      "desc": "Fork de Sentinel Tickets pour relier un système de tickets Discord à GLPI. En cours."
+    }
+  },
   "stack": {
-    "LANGAGES": [["c", "C"], ["cplusplus", "C++"], ["typescript", "TypeScript"], ["javascript", "JavaScript"], ["python", "Python"], ["php", "PHP"]],
-    "WEB": [["laravel", "Laravel"], ["vuedotjs", "Vue.js"], ["nuxtdotjs", "Nuxt.js"], ["nextdotjs", "Next.js"], ["drupal", "Drupal"], ["wordpress", "WordPress"]],
-    "INFRA": [["debian", "Debian"], ["docker", "Docker"], ["nginx", "Nginx"], ["mysql", "MySQL"], ["grafana", "Grafana"], ["cloudflare", "Cloudflare"]]
+    "LANGAGES": [
+      ["c", "C"],
+      ["cplusplus", "C++"],
+      ["typescript", "TypeScript"],
+      ["javascript", "JavaScript"],
+      ["python", "Python"],
+      ["php", "PHP"]
+    ],
+    "WEB": [
+      ["laravel", "Laravel"],
+      ["vuedotjs", "Vue.js"],
+      ["nuxtdotjs", "Nuxt.js"],
+      ["nextdotjs", "Next.js"],
+      ["drupal", "Drupal"],
+      ["wordpress", "WordPress"]
+    ],
+    "INFRA": [
+      ["debian", "Debian"],
+      ["docker", "Docker"],
+      ["nginx", "Nginx"],
+      ["mysql", "MySQL"],
+      ["grafana", "Grafana"],
+      ["cloudflare", "Cloudflare"]
+    ]
   }
 }

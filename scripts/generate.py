@@ -2,9 +2,10 @@
 
 Aucune dépendance : Python 3.9+ et la bibliothèque standard.
     python scripts/generate.py
-Les textes se modifient dans scripts/config.json. Les chiffres (contributions,
-langages, dates) sont lus sur GitHub à chaque exécution. Si GitHub ne répond pas,
-les SVG de données déjà présents sont conservés.
+Les textes se modifient dans scripts/config.json. Les dépôts affichés (voir
+select_repos), les chiffres, les langages et les dates sont lus sur GitHub à
+chaque exécution. Si GitHub ne répond pas, le README et les SVG déjà présents
+sont conservés.
 """
 import datetime as dt
 import json
@@ -231,17 +232,51 @@ def wrap(text, n):
     return lines
 
 
-def card(idx, item, fork):
-    repo = item["repo"]
-    meta = fetch(f"https://api.github.com/repos/{USER}/{repo}")
+def select_repos():
+    """Choisit les dépôts à afficher, sans liste à tenir à jour.
+
+    Projets : tous les dépôts publics qui ne sont pas des forks (hors dépôt du
+    profil), du plus récemment poussé au plus ancien.
+    Forks : seulement ceux qui ont au moins un commit d'avance sur l'original,
+    c'est-à-dire ceux où il y a vraiment du travail à toi.
+    Le champ "repos" de config.json permet, par dépôt, de forcer une description
+    ("desc"), de déclarer une origine pour une copie non marquée comme fork
+    ("origin"), de masquer ("hide") ou de forcer l'affichage d'un fork ("show").
+    """
+    over = CFG.get("repos", {})
+    repos = fetch(f"https://api.github.com/users/{USER}/repos?per_page=100&type=owner&sort=pushed")
+    projects, forks = [], []
+    for r in repos:
+        name, o = r["name"], over.get(r["name"], {})
+        if name.lower() == USER.lower() or r.get("private") or r.get("archived") or o.get("hide"):
+            continue
+        if r["fork"]:
+            meta = fetch(r["url"])
+            parent = meta.get("parent") or {}
+            origin = parent.get("full_name")
+            keep = o.get("show", False)
+            if not keep and origin:
+                try:
+                    cmp = fetch(f"https://api.github.com/repos/{origin}/compare/"
+                                f"{parent['default_branch']}...{USER}:{meta['default_branch']}")
+                    keep = cmp.get("ahead_by", 0) > 0
+                except Exception as e:
+                    print(f"comparaison {name} impossible : {e}", file=sys.stderr)
+            if keep:
+                forks.append((r, origin))
+        elif o.get("origin"):
+            forks.append((r, o["origin"]))
+        else:
+            projects.append((r, None))
+    return projects[:CFG.get("max_projects", 6)], forks[:CFG.get("max_forks", 4)]
+
+
+def card(idx, meta, origin, fork):
+    repo = meta["name"]
+    item = CFG.get("repos", {}).get(repo, {})
     langs = fetch(f"https://api.github.com/repos/{USER}/{repo}/languages")
-    if fork and meta.get("parent"):
-        tag = f"FORK ← {meta['parent']['full_name']}"
-    elif item.get("origin"):
-        tag = f"FORK ← {item['origin']}"
-    else:
-        tag = "PUBLIC"
-    desc = item.get("desc") or meta.get("description") or ""
+    tag = f"FORK ← {origin}" if origin else ("FORK" if fork else "PUBLIC")
+    desc = item.get("desc") or meta.get("description") or "Pas encore de description."
     lines = wrap(desc, 76)[:2]
     pushed = meta["pushed_at"][:10]
     w, h = 900, 200
@@ -288,6 +323,8 @@ def readme(cards, forks):
         stack.append(f'<img src="assets/stack/g-{gname.lower()}.svg" alt="{gname}" height="44"><br>')
         stack.append("".join(f'<img src="assets/stack/{i}.svg" alt="{x(l)}" height="44">' for i, l in items) + "<br>")
     site = CFG["site"]
+    fork_block = (f'\n<img src="assets/t-forks.svg" alt="Forks" width="100%">\n\n{links(forks)}\n'
+                  if forks else "")
     return f"""<img src="assets/header.svg" alt="{x(CFG['name'])}, {x(CFG['role'])}" width="100%">
 
 <p align="center">{x(CFG['bio'])}<br><b><a href="{site}">{x(site.split('//')[1])}</a></b></p>
@@ -298,11 +335,7 @@ def readme(cards, forks):
 <img src="assets/t-projets.svg" alt="Projets" width="100%">
 
 {links(cards)}
-
-<img src="assets/t-forks.svg" alt="Forks" width="100%">
-
-{links(forks)}
-
+{fork_block}
 <img src="assets/t-stack.svg" alt="Stack" width="100%">
 
 {chr(10).join(stack)}
@@ -329,19 +362,31 @@ def main():
     except Exception as e:  # on garde l'ancien SVG
         print(f"activité non mise à jour : {e}", file=sys.stderr)
 
+    try:
+        projects, forks_sel = select_repos()
+    except Exception as e:  # sans la liste des dépôts, on ne touche pas au README
+        print(f"liste des dépôts indisponible, README conservé : {e}", file=sys.stderr)
+        return
+
     def build(items, fork):
         out = []
-        for i, it in enumerate(items, 1):
+        for i, (meta, origin) in enumerate(items, 1):
+            name = meta["name"]
             try:
-                out.append(card(i, it, fork))
+                out.append(card(i, meta, origin, fork))
             except Exception as e:
-                print(f"carte {it['repo']} non mise à jour : {e}", file=sys.stderr)
-                out.append((f"card-{it['repo'].lower()}.svg", it["repo"], it.get("desc", "")))
+                print(f"carte {name} non mise à jour : {e}", file=sys.stderr)
+                if (ASSETS / f"card-{name.lower()}.svg").exists():
+                    out.append((f"card-{name.lower()}.svg", name, meta.get("description") or ""))
         return out
 
-    cards, forks = build(CFG["projects"], False), build(CFG["forks"], True)
+    cards, forks = build(projects, False), build(forks_sel, True)
+    used = {n for n, _, _ in cards + forks}
+    for old in ASSETS.glob("card-*.svg"):  # cartes des dépôts qui ne sont plus affichés
+        if old.name not in used:
+            old.unlink()
     (ROOT / "README.md").write_text(readme(cards, forks), encoding="utf-8", newline="\n")
-    print("ok")
+    print(f"ok : {len(cards)} projets, {len(forks)} forks")
 
 
 if __name__ == "__main__":
