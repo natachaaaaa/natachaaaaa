@@ -63,37 +63,30 @@ Des projets d'autres personnes, sur lesquels j'ai travaillé. Le crédit revient
 <table>
 <tr>
 <td width="50%" valign="top">
-
-**Langages**
-
+<b>Langages</b><br>
 <img src="https://img.shields.io/badge/-C-c06bff?style=for-the-badge&labelColor=0b0811&logo=c&logoColor=dccbf5" alt="C">
 <img src="https://img.shields.io/badge/-C%2B%2B-c06bff?style=for-the-badge&labelColor=0b0811&logo=cplusplus&logoColor=dccbf5" alt="C++">
 <img src="https://img.shields.io/badge/-TypeScript-c06bff?style=for-the-badge&labelColor=0b0811&logo=typescript&logoColor=dccbf5" alt="TypeScript">
 <img src="https://img.shields.io/badge/-JavaScript-c06bff?style=for-the-badge&labelColor=0b0811&logo=javascript&logoColor=dccbf5" alt="JavaScript">
 <img src="https://img.shields.io/badge/-Python-c06bff?style=for-the-badge&labelColor=0b0811&logo=python&logoColor=dccbf5" alt="Python">
 <img src="https://img.shields.io/badge/-PHP-c06bff?style=for-the-badge&labelColor=0b0811&logo=php&logoColor=dccbf5" alt="PHP">
-
 </td>
 <td width="50%" valign="top">
-
-**Web**
-
+<b>Web</b><br>
 <img src="https://img.shields.io/badge/-Laravel-c06bff?style=for-the-badge&labelColor=0b0811&logo=laravel&logoColor=dccbf5" alt="Laravel">
 <img src="https://img.shields.io/badge/-Vue.js-c06bff?style=for-the-badge&labelColor=0b0811&logo=vuedotjs&logoColor=dccbf5" alt="Vue.js">
 <img src="https://img.shields.io/badge/-Nuxt.js-c06bff?style=for-the-badge&labelColor=0b0811&logo=nuxt&logoColor=dccbf5" alt="Nuxt.js">
 <img src="https://img.shields.io/badge/-Next.js-c06bff?style=for-the-badge&labelColor=0b0811&logo=nextdotjs&logoColor=dccbf5" alt="Next.js">
 <img src="https://img.shields.io/badge/-Drupal-c06bff?style=for-the-badge&labelColor=0b0811&logo=drupal&logoColor=dccbf5" alt="Drupal">
 <img src="https://img.shields.io/badge/-WordPress-c06bff?style=for-the-badge&labelColor=0b0811&logo=wordpress&logoColor=dccbf5" alt="WordPress">
-
-**Infra**
-
+<br><br>
+<b>Infra</b><br>
 <img src="https://img.shields.io/badge/-Debian-c06bff?style=for-the-badge&labelColor=0b0811&logo=debian&logoColor=dccbf5" alt="Debian">
 <img src="https://img.shields.io/badge/-Docker-c06bff?style=for-the-badge&labelColor=0b0811&logo=docker&logoColor=dccbf5" alt="Docker">
 <img src="https://img.shields.io/badge/-Nginx-c06bff?style=for-the-badge&labelColor=0b0811&logo=nginx&logoColor=dccbf5" alt="Nginx">
 <img src="https://img.shields.io/badge/-MySQL-c06bff?style=for-the-badge&labelColor=0b0811&logo=mysql&logoColor=dccbf5" alt="MySQL">
 <img src="https://img.shields.io/badge/-Grafana-c06bff?style=for-the-badge&labelColor=0b0811&logo=grafana&logoColor=dccbf5" alt="Grafana">
 <img src="https://img.shields.io/badge/-Cloudflare-c06bff?style=for-the-badge&labelColor=0b0811&logo=cloudflare&logoColor=dccbf5" alt="Cloudflare">
-
 </td>
 </tr>
 </table>
