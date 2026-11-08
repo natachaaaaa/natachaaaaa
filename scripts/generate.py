@@ -1,40 +1,45 @@
-"""Génère le README du profil et ses SVG (DA inspirée de Kang Tao, Cyberpunk 2077).
+"""Génère le README du profil et ses visuels (style sombre et tramé).
 
-Aucune dépendance : Python 3.9+ et la bibliothèque standard.
+    pip install pillow numpy
     python scripts/generate.py
-Les textes se modifient dans scripts/config.json. Les dépôts affichés (voir
-select_repos), les chiffres, les langages et les dates sont lus sur GitHub à
-chaque exécution. Si GitHub ne répond pas, le README et les SVG déjà présents
-sont conservés.
+
+Tous les visuels partent de dessins procéduraux originaux, tramés ici même
+(Atkinson et Bayer). Les textes se règlent dans scripts/config.json. Les dépôts
+affichés, les chiffres, les langages et les dates sont lus sur GitHub à chaque
+exécution ; si GitHub ne répond pas, le README et les images déjà présents sont
+conservés.
 """
+from __future__ import annotations
+
 import datetime as dt
 import json
+import math
 import os
 import re
 import sys
+import urllib.parse
 import urllib.request
+import zlib
 from html import escape
 from pathlib import Path
 
+import numpy as np
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
+
 ROOT = Path(__file__).resolve().parent.parent
-ASSETS = ROOT / "assets"
-ICONS = Path(__file__).resolve().parent / "icons"
+DOCS = ROOT / "docs"
+FONT = ROOT / "fonts" / "VT323-Regular.ttf"
 CFG = json.loads((Path(__file__).resolve().parent / "config.json").read_text(encoding="utf-8"))
 USER = CFG["user"]
 
-# Palette
-BG = "#121212"
-PANEL = "#1a1a1a"
-LINE = "#2e2e2e"
-OR = "#EE6A2F"       # orange Kang Tao
-OR_DK = "#8f3a17"
-WHITE = "#F2F0EC"
-GREY = "#8c8c8c"
-LEVELS = ["#232323", "#4a2312", "#80361a", "#bb4f23", OR]
-
-SANS = "'Arial Black','Segoe UI Black','Helvetica Neue',Arial,sans-serif"
-MONO = "Consolas,'DejaVu Sans Mono',Menlo,monospace"
-CJK = "'Microsoft YaHei','PingFang SC','Noto Sans CJK SC','Source Han Sans SC',sans-serif"
+INK = (11, 8, 17)          # #0b0811
+DEEP = (6, 4, 9)           # #060409
+LINE = (61, 43, 87)
+MID = (120, 60, 200)
+VIOLET = (192, 107, 255)   # #c06bff
+PINK = (255, 95, 207)      # #ff5fcf
+LAV = (220, 203, 245)      # #dccbf5
+DIM = (110, 92, 140)
 
 MOIS = ["JAN", "FÉV", "MAR", "AVR", "MAI", "JUN", "JUL", "AOÛ", "SEP", "OCT", "NOV", "DÉC"]
 
@@ -43,131 +48,232 @@ def x(s):
     return escape(str(s), quote=True)
 
 
-def svg(w, h, body, label, style=""):
-    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" '
-            f'role="img" aria-label="{x(label)}"><title>{x(label)}</title>'
-            f'<style>{style}</style>{body}</svg>\n')
+def font(px):
+    return ImageFont.truetype(str(FONT), px)
 
 
-def write(name, content):
-    p = ASSETS / name
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(content, encoding="utf-8", newline="\n")
+def save(img, name):
+    DOCS.mkdir(parents=True, exist_ok=True)
+    img.save(DOCS / name, optimize=True)
 
 
 def fetch(url, raw=False):
-    req = urllib.request.Request(url, headers={"User-Agent": "profile-readme-generator"})
-    tok = os.environ.get("GITHUB_TOKEN")
-    if tok and "api.github.com" in url:
-        req.add_header("Authorization", f"Bearer {tok}")
-    with urllib.request.urlopen(req, timeout=30) as r:
-        data = r.read().decode("utf-8")
+    # PROFILE_CACHE=dossier : garde les réponses sur disque (tests en local sans
+    # épuiser les 60 requêtes/heure de l'API sans jeton).
+    cache = os.environ.get("PROFILE_CACHE")
+    cfile = Path(cache) / f"{zlib.crc32(url.encode()):08x}" if cache else None
+    if cfile and cfile.exists():
+        data = cfile.read_text(encoding="utf-8")
+    else:
+        req = urllib.request.Request(url, headers={"User-Agent": "profile-readme-generator"})
+        tok = os.environ.get("GITHUB_TOKEN")
+        if tok and "api.github.com" in url:
+            req.add_header("Authorization", f"Bearer {tok}")
+        with urllib.request.urlopen(req, timeout=30) as r:
+            data = r.read().decode("utf-8")
+        if cfile:
+            cfile.parent.mkdir(parents=True, exist_ok=True)
+            cfile.write_text(data, encoding="utf-8")
     return data if raw else json.loads(data)
 
 
-def hatch(pid, color="#1c1c1c"):
-    return (f'<pattern id="{pid}" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">'
-            f'<line x1="0" y1="0" x2="0" y2="10" stroke="{color}" stroke-width="3"/></pattern>')
+# ---------------------------------------------------------------- tramage
+
+BAYER4 = np.array([[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]], np.float32) / 16 + 1 / 32
 
 
-# ---------------------------------------------------------------- statiques
-
-def header():
-    w, h = 900, 270
-    c1, c2 = CFG["cjk"]
-    style = (
-        "@keyframes sweep{0%{transform:translateX(-300px)}55%,100%{transform:translateX(1100px)}}"
-        ".sweep{animation:sweep 7s ease-in-out infinite}"
-        "@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}.cur{animation:blink 1.1s steps(1) infinite}"
-        "@keyframes scan{0%{transform:translateY(0)}100%{transform:translateY(212px)}}"
-        ".scan{animation:scan 2.6s linear infinite}"
-    )
-    body = f"""
-<defs>{hatch('hh')}
-<linearGradient id="sw" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".07"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
-<clipPath id="hc"><rect width="{w}" height="{h}" rx="6"/></clipPath><clipPath id="bc"><rect x="24" y="29" width="112" height="212"/></clipPath></defs>
-<g clip-path="url(#hc)">
-<rect width="{w}" height="{h}" fill="{BG}"/>
-<rect x="560" width="340" height="{h}" fill="url(#hh)"/>
-<rect width="{w}" height="5" fill="{OR}"/>
-<rect y="{h-5}" width="{w}" height="5" fill="{OR}"/>
-<rect x="24" y="29" width="112" height="212" fill="{OR}"/>
-<text x="80" y="122" text-anchor="middle" font-family="{CJK}" font-weight="700" font-size="76" fill="{BG}">{c1}</text>
-<text x="80" y="216" text-anchor="middle" font-family="{CJK}" font-weight="700" font-size="76" fill="{BG}">{c2}</text>
-<g clip-path="url(#bc)"><rect class="scan" x="24" y="29" width="112" height="3" fill="{BG}" opacity=".35"/></g>
-<text x="162" y="66" font-family="{MONO}" font-weight="700" font-size="18" letter-spacing="3" fill="{OR}">{x(CFG['role'])}</text>
-<text x="158" y="142" font-family="{SANS}" font-weight="900" font-style="italic" font-size="70" letter-spacing="1" fill="{WHITE}">{x(CFG['name'])}</text>
-<rect class="cur" x="612" y="92" width="16" height="52" fill="{OR}"/>
-<line x1="162" y1="176" x2="196" y2="176" stroke="{OR}" stroke-width="2"/>
-<text x="206" y="183" font-family="{CJK}" font-size="20" fill="{OR}">{x(CFG['tagline_cjk'])}</text>
-<line x1="420" y1="176" x2="600" y2="176" stroke="{OR}" stroke-width="2"/>
-<text x="162" y="226" font-family="{MONO}" font-size="18" fill="{GREY}">@{x(USER)}</text>
-<text x="636" y="226" text-anchor="end" font-family="{SANS}" font-weight="900" font-style="italic" font-size="15" letter-spacing="1" fill="{WHITE}">{x(CFG['slogan'])}</text>
-<g font-family="{MONO}" font-size="16" letter-spacing="1">
-<rect x="660" y="44" width="216" height="182" fill="{PANEL}" stroke="{LINE}"/>
-<rect x="660" y="44" width="216" height="30" fill="{OR}"/>
-<text x="674" y="65" font-weight="700" fill="{BG}">// DOSSIER</text>
-<text x="674" y="104" fill="{GREY}">ID</text><text x="862" y="104" text-anchor="end" fill="{WHITE}">{x(USER.upper())}</text>
-<text x="674" y="140" fill="{GREY}">DEPUIS</text><text x="862" y="140" text-anchor="end" fill="{WHITE}">{x(CFG['since'])}</text>
-<text x="674" y="176" fill="{GREY}">FOCUS</text><text x="862" y="176" text-anchor="end" fill="{OR}">{x(CFG['focus'])}</text>
-<text x="674" y="212" fill="{GREY}">ZONE</text><text x="862" y="212" text-anchor="end" fill="{WHITE}">FR</text>
-</g>
-<rect class="sweep" x="0" y="0" width="260" height="{h}" fill="url(#sw)"/>
-</g>"""
-    write("header.svg", svg(w, h, body, f"{CFG['name']}, {CFG['role']}", style))
+def bayer_matrix(n):
+    m = np.array([[0]], np.float32)
+    while m.shape[0] < n:
+        m = np.block([[4 * m, 4 * m + 2], [4 * m + 3, 4 * m + 1]])
+    return (m + 0.5) / (n * n)
 
 
-def title(fname, num, text, cjk):
-    w, h = 900, 64
-    body = f"""
-<rect x="0" y="12" width="52" height="40" fill="{OR}"/>
-<text x="26" y="40" text-anchor="middle" font-family="{MONO}" font-weight="700" font-size="20" fill="{BG}">{num}</text>
-<text x="68" y="44" font-family="{SANS}" font-weight="900" font-style="italic" font-size="28" letter-spacing="2" fill="{OR}">{x(text)}</text>
-<line x1="{80 + len(text) * 22}" y1="32" x2="820" y2="32" stroke="{LINE}" stroke-width="2"/>
-<rect x="812" y="28" width="8" height="8" fill="{OR}"/>
-<text x="900" y="42" text-anchor="end" font-family="{CJK}" font-size="24" fill="{GREY}">{x(cjk)}</text>"""
-    write(fname, svg(w, h, body, text))
+def bayer(gray, levels, n=8):
+    """Tramage ordonné : gray (0..1) -> indices 0..levels-1."""
+    h, w = gray.shape
+    t = np.tile(bayer_matrix(n), (h // n + 1, w // n + 1))[:h, :w]
+    v = gray * (levels - 1)
+    return np.clip(np.floor(v + t), 0, levels - 1).astype(np.int32)
 
 
-def badge(icon, label):
-    path = re.search(r'<path d="([^"]+)"', (ICONS / f"{icon}.svg").read_text(encoding="utf-8")).group(1)
-    tw = len(label) * 10.5
-    w, h = int(44 + 14 + tw + 16 + 8), 44
-    bw = w - 8
-    body = f"""
-<rect x=".5" y=".5" width="{bw - 1}" height="{h - 1}" fill="{PANEL}" stroke="{LINE}"/>
-<rect width="44" height="{h}" fill="{OR}"/>
-<g transform="translate(11 11) scale(0.917)"><path d="{path}" fill="{BG}"/></g>
-<text x="58" y="28" font-family="{MONO}" font-weight="700" font-size="17" letter-spacing="1" fill="{WHITE}">{x(label.upper())}</text>
-<rect x="{bw - 6}" y="{h - 6}" width="6" height="6" fill="{OR}"/>"""
-    write(f"stack/{icon}.svg", svg(w, h, body, label))
+def atkinson(gray, levels):
+    """Diffusion d'erreur d'Atkinson (3/4 de l'erreur répartie, contrastes francs)."""
+    h, w = gray.shape
+    a = (gray * (levels - 1)).astype(np.float64).tolist()
+    out = np.zeros((h, w), np.int32)
+    top = levels - 1
+    for y in range(h):
+        row, r1 = a[y], a[y + 1] if y + 1 < h else None
+        r2 = a[y + 2] if y + 2 < h else None
+        orow = out[y]
+        for xx in range(w):
+            old = row[xx]
+            q = 0 if old < 0.5 else (top if old > top - 0.5 else int(old + 0.5))
+            orow[xx] = q
+            e = (old - q) / 8
+            if xx + 1 < w:
+                row[xx + 1] += e
+            if xx + 2 < w:
+                row[xx + 2] += e
+            if r1 is not None:
+                if xx > 0:
+                    r1[xx - 1] += e
+                r1[xx] += e
+                if xx + 1 < w:
+                    r1[xx + 1] += e
+            if r2 is not None:
+                r2[xx] += e
+    return out
 
 
-def group(name):
-    w = int(len(name) * 12 + 60)
-    body = f"""
-<text x="0" y="30" font-family="{MONO}" font-weight="700" font-size="18" letter-spacing="3" fill="{OR}">// {x(name)}</text>"""
-    write(f"stack/g-{name.lower()}.svg", svg(w, 44, body, name))
+def colorize(idx, palette, accent=None, accent_palette=None, scale=2):
+    """Indices -> image RGB (agrandie sans lissage), avec une 2e palette sous un masque."""
+    pal = np.array(palette, np.uint8)
+    rgb = pal[idx]
+    if accent is not None:
+        rgb = np.where(accent[..., None], np.array(accent_palette, np.uint8)[idx], rgb)
+    img = Image.fromarray(rgb, "RGB")
+    return img.resize((img.width * scale, img.height * scale), Image.NEAREST)
 
 
-def footer():
-    w, h = 900, 130
-    c1, c2 = CFG["cjk"]
-    body = f"""
-<defs>{hatch('fh', '#191919')}</defs>
-<rect width="{w}" height="{h}" rx="6" fill="{BG}"/>
-<rect x="0" y="0" width="{w}" height="{h}" rx="6" fill="url(#fh)"/>
-<rect x="0" y="20" width="10" height="90" fill="{OR}"/>
-<rect x="34" y="20" width="90" height="90" fill="{OR}"/>
-<text x="79" y="80" text-anchor="middle" font-family="{CJK}" font-weight="700" font-size="40" fill="{BG}">{c1}{c2}</text>
-<text x="146" y="70" font-family="{SANS}" font-weight="900" font-style="italic" font-size="44" fill="{OR}">{x(USER.upper())}</text>
-<line x1="148" y1="88" x2="866" y2="88" stroke="{OR_DK}" stroke-width="2"/>
-<text x="148" y="110" font-family="{MONO}" font-size="15" letter-spacing="1" fill="{GREY}">{x(CFG['slogan'])}</text>
-<text x="866" y="110" text-anchor="end" font-family="{MONO}" font-size="13" fill="#5c5c5c">DA fan-made inspirée de Kang Tao · Cyberpunk 2077</text>"""
-    write("footer.svg", svg(w, h, body, f"{USER}, {CFG['slogan']}"))
+def glow_text(img, xy, text, f, fill, glow, radius, anchor="mm", split=0):
+    halo = Image.new("L", img.size, 0)
+    ImageDraw.Draw(halo).text(xy, text, font=f, fill=255, anchor=anchor, stroke_width=max(1, radius // 3), stroke_fill=255)
+    halo = halo.filter(ImageFilter.GaussianBlur(radius))
+    img.paste(Image.new("RGB", img.size, glow), (0, 0), halo.point(lambda v: min(255, int(v * 1.8))))
+    d = ImageDraw.Draw(img)
+    if split:
+        d.text((xy[0] - split, xy[1]), text, font=f, fill=(255, 40, 120), anchor=anchor)
+        d.text((xy[0] + split, xy[1]), text, font=f, fill=(40, 220, 255), anchor=anchor)
+    d.text(xy, text, font=f, fill=fill, anchor=anchor)
 
 
-# ---------------------------------------------------------------- données
+def scanlines(img, strength=0.22):
+    a = np.asarray(img, np.float32).copy()
+    a[1::3] *= 1 - strength
+    return Image.fromarray(a.astype(np.uint8), "RGB")
+
+
+def vignette(img, power=0.55):
+    w, h = img.size
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    r = np.sqrt(((xx - w / 2) / (w / 2)) ** 2 + ((yy - h / 2) / (h / 2)) ** 2)
+    k = np.clip(1.15 - power * r ** 2, 0.25, 1)
+    return Image.fromarray((np.asarray(img, np.float32) * k[..., None]).astype(np.uint8), "RGB")
+
+
+# ---------------------------------------------------------------- dessins
+
+def scene(w, h, seed=7):
+    """Dessin original : ciel étoilé, planète à anneau, crêtes et grille en perspective."""
+    rng = np.random.default_rng(seed)
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    hz = h * 0.62
+    g = np.clip(0.10 + 0.22 * (yy / hz) ** 2.2, 0, 0.35) * (yy < hz)
+    stars = rng.random((h, w)) > 0.9965
+    g = np.where(stars & (yy < hz), rng.uniform(0.5, 1, (h, w)), g)
+
+    # Planète éclairée par le haut-gauche, et son anneau.
+    cx, cy, r = w * 0.70, h * 0.38, h * 0.27
+    dx, dy = (xx - cx) / r, (yy - cy) / r
+    d2 = dx ** 2 + dy ** 2
+    nz = np.sqrt(np.clip(1 - d2, 0, 1))
+    lam = np.clip(-0.55 * dx - 0.6 * dy + 0.58 * nz, 0, 1)
+    bands = 0.08 * np.sin(dy * 14 + np.sin(dx * 3) * 1.5)
+    planet = d2 < 1
+    g = np.where(planet, np.clip(0.06 + 0.9 * lam ** 0.9 + bands * lam, 0, 1), g)
+    rim = (d2 > 0.86) & (d2 < 1.0) & (dx > 0.1)
+    ring_rx, ring_ry, tilt = r * 2.0, r * 0.42, -0.22
+    rx = (xx - cx) * math.cos(tilt) - (yy - cy) * math.sin(tilt)
+    ry = (xx - cx) * math.sin(tilt) + (yy - cy) * math.cos(tilt)
+    e = (rx / ring_rx) ** 2 + (ry / ring_ry) ** 2
+    ring = (e > 0.78) & (e < 1.0)
+    front = ry > 0
+    ring_v = 0.55 + 0.35 * np.cos(e * 60)
+    g = np.where(ring & (front | ~planet), ring_v * (0.55 + 0.45 * (rx / ring_rx + 1) / 2), g)
+
+    # Crêtes sombres sur l'horizon.
+    ridge = hz - (h * 0.06) * (0.6 + 0.4 * np.sin(xx / w * 9 + 1.3) * np.sin(xx / w * 23))
+    g = np.where((yy > ridge) & (yy < hz), 0.05, g)
+
+    # Grille au sol, en perspective.
+    floor = yy >= hz
+    depth = np.clip((yy - hz) / (h - hz), 0, 1) + 1e-3
+    zf = 1 / depth                       # profondeur du sol
+    # Épaisseur d'une ligne d'environ 1 px à l'écran ; on n'en trace aucune là
+    # où elles se confondraient (près de l'horizon).
+    th = 0.7 * 1.4 * zf ** 2 / (h - hz)
+    hl = (np.abs(((zf * 1.4) % 1) - 0.5) < th) & (th < 0.3)
+    vx = (xx - w / 2) / depth            # abscisse sur le sol : les lignes fuient vers le centre
+    sp = w * 0.11
+    tv = 0.6 / (depth * sp)
+    vl = (np.abs(((vx / sp) % 1) - 0.5) < tv) & (tv < 0.3)
+    grid_v = np.where(hl | vl, 0.25 + 0.75 * depth ** 0.6, 0.03 + 0.05 * depth)
+    g = np.where(floor, grid_v, g)
+    accent = rim | (floor & (depth < 0.22)) | (ring & front & (rx > 0))
+    return np.clip(g, 0, 1).astype(np.float32), accent
+
+
+def motif(w, h, seed):
+    """Petit dessin procédural propre à chaque dépôt (choisi par son nom)."""
+    rng = np.random.default_rng(seed)
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    kind = seed % 4
+    if kind == 0:   # interférences
+        g = np.zeros((h, w), np.float32)
+        for _ in range(3):
+            px, py = rng.uniform(0, w), rng.uniform(0, h)
+            g += np.cos(np.sqrt((xx - px) ** 2 + (yy - py) ** 2) / rng.uniform(3, 7))
+        g = (g / 3 + 1) / 2 * np.clip(1.2 - yy / h, 0.2, 1)
+    elif kind == 1:  # filaments
+        img = Image.new("L", (w, h), 12)
+        d = ImageDraw.Draw(img)
+        for i in range(70):
+            y0, amp, fr, ph = rng.uniform(-10, h + 10), rng.uniform(4, 24), rng.uniform(0.01, 0.04), rng.uniform(0, 6.3)
+            pts = [(xv, y0 + amp * math.sin(xv * fr + ph)) for xv in range(0, w + 8, 8)]
+            d.line(pts, fill=int(rng.uniform(70, 255)), width=1 + (i % 3 == 0))
+        g = np.asarray(img, np.float32) / 255
+    elif kind == 2:  # dunes
+        g = np.full((h, w), 0.05, np.float32)
+        for k in range(5):
+            base = h * (0.25 + 0.15 * k)
+            line = base + rng.uniform(6, 16) * np.sin(xx / rng.uniform(18, 40) + rng.uniform(0, 6))
+            g = np.where(yy > line, 0.85 - 0.16 * k + 0.1 * np.sin(yy / 3), g)
+    else:            # tunnel
+        cx, cy = w * rng.uniform(0.3, 0.7), h * 0.5
+        ang = np.arctan2(yy - cy, xx - cx)
+        rad = np.sqrt((xx - cx) ** 2 + (yy - cy) ** 2) / h
+        g = (0.5 + 0.5 * np.sin(ang * 12 + 1 / (rad + 0.08) * 3)) * np.clip(rad * 1.6, 0, 1)
+    g = np.clip(g, 0, 1) * 0.85
+    accent = (xx / w + (1 - yy / h)) > 1.45
+    return g.astype(np.float32), accent
+
+
+# ---------------------------------------------------------------- visuels
+
+def hero():
+    w, h = 640, 260
+    g, accent = scene(w, h)
+    idx = atkinson(g, 4)
+    art = colorize(idx, [DEEP, LINE, VIOLET, LAV], accent, [DEEP, (110, 30, 90), PINK, (255, 200, 240)])
+    band = Image.new("L", art.size, 0)
+    ImageDraw.Draw(band).rectangle([0, int(art.height * 0.70), art.width, art.height], fill=150)
+    art.paste(Image.new("RGB", art.size, DEEP), (0, 0), band.filter(ImageFilter.GaussianBlur(30)))
+    W, H = art.size
+    glow_text(art, (W // 2, int(H * 0.815)), CFG["name"], font(int(H * 0.21)), LAV, VIOLET, 14, split=2)
+    glow_text(art, (W // 2, int(H * 0.935)), CFG["tagline"], font(int(H * 0.062)), (200, 170, 255), (60, 0, 110), 6)
+    save(vignette(scanlines(art)), "hero.png")
+
+
+def divider(w=1280, h=18):
+    xs = np.linspace(-1, 1, w // 2, dtype=np.float32)[None, :]
+    v = np.clip(1 - np.abs(xs) ** 1.6, 0, 1) * np.clip(1 - np.abs(np.linspace(-1, 1, h // 2))[:, None] * 0.9, 0, 1)
+    h2, w2 = v.shape
+    t = np.tile(BAYER4, (h2 // 4 + 1, w2 // 4 + 1))[:h2, :w2]
+    idx = np.clip(np.floor(v * 4 + t), 0, 4).astype(np.int32)
+    save(colorize(idx, [INK, LINE, MID, VIOLET, PINK]), "divider.png")
+
 
 def contributions():
     html = fetch(f"https://github.com/users/{USER}/contributions", raw=True)
@@ -183,66 +289,78 @@ def contributions():
 
 
 def activity(days):
-    w, h = 900, 300
+    W, H = 1280, 360
+    img = Image.new("RGB", (W, H), INK)
+    d = ImageDraw.Draw(img)
+    total, active = sum(days.values()), sum(1 for v in days.values() if v)
+    mx = max(days.values()) or 1
+    glow_text(img, (36, 52), str(total), font(84), LAV, VIOLET, 10, anchor="lm", split=2)
+    tx = 36 + d.textlength(str(total), font=font(84)) + 22
+    d.text((tx, 58), "CONTRIBUTIONS · 12 MOIS", font=font(36), fill=VIOLET, anchor="lm")
+    d.text((W - 36, 58), f"{active} JOUR{'S' if active > 1 else ''} ACTIF{'S' if active > 1 else ''}",
+           font=font(36), fill=PINK, anchor="rm")
     dates = sorted(days)
     start = dt.date.fromisoformat(dates[0])
-    start -= dt.timedelta(days=(start.weekday() + 1) % 7)  # semaine commençant dimanche (comme GitHub)
-    total = sum(days.values())
-    active = sum(1 for v in days.values() if v)
-    mx = max(days.values()) or 1
-    cell, gap, ox, oy = 13, 3, 30, 112
-    cells, months, last_m = [], [], None
+    start -= dt.timedelta(days=(start.weekday() + 1) % 7)
+    cell, gap, ox, oy = 18, 5, 36, 132
+    off = np.array([[24, 16, 34]], np.uint8)
     for d_str, n in days.items():
-        d = dt.date.fromisoformat(d_str)
-        col = (d - start).days // 7
-        row = (d.weekday() + 1) % 7
-        lvl = 0 if n == 0 else min(4, 1 + int(3 * n / mx + 0.5) if mx > 1 else 4)
-        cells.append(f'<rect x="{ox + col * (cell + gap)}" y="{oy + row * (cell + gap)}" width="{cell}" height="{cell}" fill="{LEVELS[lvl]}"/>')
-    for col in range(54):
-        d = start + dt.timedelta(days=col * 7)
-        if d.month != last_m and d.day <= 7 and col < 52:
-            months.append(f'<text x="{ox + col * (cell + gap)}" y="{oy - 12}" font-family="{MONO}" font-size="15" fill="{GREY}">{MOIS[d.month - 1]}</text>')
-        last_m = d.month
-    legend = "".join(f'<rect x="{760 + i * 19}" y="266" width="13" height="13" fill="{c}"/>' for i, c in enumerate(LEVELS))
-    body = f"""
-<defs>{hatch('ah', '#181818')}</defs>
-<rect width="{w}" height="{h}" rx="6" fill="{BG}"/>
-<rect x="0" y="0" width="{w}" height="64" fill="url(#ah)"/>
-<rect x="0" y="0" width="{w}" height="4" fill="{OR}"/>
-<text x="30" y="46" font-family="{SANS}" font-weight="900" font-style="italic" font-size="40" fill="{WHITE}">{total}</text>
-<text x="{44 + len(str(total)) * 30}" y="44" font-family="{MONO}" font-weight="700" font-size="17" letter-spacing="2" fill="{OR}">CONTRIBUTIONS · 12 MOIS</text>
-<text x="870" y="44" text-anchor="end" font-family="{MONO}" font-size="17" letter-spacing="1" fill="{GREY}">{active} JOUR{'S' if active > 1 else ''} ACTIF{'S' if active > 1 else ''}</text>
-{''.join(months)}
-{''.join(cells)}
-<text x="30" y="279" font-family="{MONO}" font-size="14" fill="#5c5c5c">SOURCE : CALENDRIER GITHUB · RECALCULÉ CHAQUE JOUR</text>
-<text x="750" y="279" text-anchor="end" font-family="{MONO}" font-size="14" fill="{GREY}">MOINS</text>{legend}
-<text x="860" y="279" font-family="{MONO}" font-size="14" fill="{GREY}">PLUS</text>"""
-    write("activity.svg", svg(w, h, body, f"{total} contributions et {active} jours actifs sur douze mois"))
+        day = dt.date.fromisoformat(d_str)
+        col, row = (day - start).days // 7, (day.weekday() + 1) % 7
+        x0, y0 = ox + col * (cell + gap), oy + row * (cell + gap)
+        if n == 0:
+            d.rectangle([x0, y0, x0 + cell - 1, y0 + cell - 1], fill=tuple(off[0]))
+            continue
+        lvl = 4 if mx == 1 else min(4, 1 + round(3 * (n - 1) / (mx - 1)))
+        dens = {1: 0.3, 2: 0.55, 3: 0.8, 4: 1.0}[lvl]
+        top = PINK if lvl == 4 else VIOLET
+        t = np.tile(BAYER4, (3, 3))[:cell // 2, :cell // 2]
+        on = (dens > t)
+        block = np.where(on[..., None], np.array(top, np.uint8), np.array(LINE, np.uint8))
+        img.paste(Image.fromarray(block, "RGB").resize((cell, cell), Image.NEAREST), (x0, y0))
+    last = None
+    for col in range(53):
+        day = start + dt.timedelta(days=col * 7)
+        if day.month != last and day.day <= 7:
+            d.text((ox + col * (cell + gap), oy - 14), MOIS[day.month - 1], font=font(26), fill=DIM, anchor="ls")
+        last = day.month
+    d.line([(0, H - 46), (W, H - 46)], fill=LINE)
+    d.text((36, H - 22), "SOURCE : CALENDRIER GITHUB · RECALCULÉ CHAQUE JOUR", font=font(26), fill=DIM, anchor="lm")
+    save(img, "activity.png")
+    return total, active
 
 
-def wrap(text, n):
-    lines, cur = [], ""
-    for word in text.split():
-        if len(cur) + len(word) + 1 > n and cur:
-            lines.append(cur)
-            cur = word
-        else:
-            cur = f"{cur} {word}".strip()
-    lines.append(cur)
-    return lines
+def tile(meta, origin, fork, langs):
+    name = meta["name"]
+    seed = zlib.crc32(name.encode())
+    g, accent = motif(320, 130, seed)
+    idx = bayer(g, 4) if seed % 2 == 0 else atkinson(g, 4)
+    art = colorize(idx, [DEEP, LINE, VIOLET, LAV], accent, [DEEP, (110, 30, 90), PINK, (255, 200, 240)])
+    shade = Image.new("L", art.size, 120)
+    art.paste(Image.new("RGB", art.size, DEEP), (0, 0), shade)
+    W, H = art.size
+    size = 74 if len(name) <= 14 else int(74 * 14 / len(name))
+    glow_text(art, (W // 2, H // 2), name.upper(), font(size), LAV, VIOLET, 10, split=2)
+    art = scanlines(art, 0.18)
+    bar = 44
+    out = Image.new("RGB", (W, H + bar), INK)
+    out.paste(art, (0, 0))
+    d = ImageDraw.Draw(out)
+    d.line([(0, H), (W, H)], fill=LINE)
+    lang = max(langs, key=langs.get).upper() if langs else "—"
+    d.text((14, H + bar // 2), f"{lang} · MAJ {meta['pushed_at'][:10]}", font=font(28), fill=VIOLET, anchor="lm")
+    d.text((W - 14, H + bar // 2), "FORK" if (fork or origin) else "PUBLIC", font=font(28), fill=PINK, anchor="rm")
+    fname = f"tile-{name.lower()}.png"
+    save(out, fname)
+    return fname
 
+
+# ---------------------------------------------------------------- dépôts
 
 def select_repos():
-    """Choisit les dépôts à afficher, sans liste à tenir à jour.
-
-    Projets : tous les dépôts publics qui ne sont pas des forks (hors dépôt du
-    profil), du plus récemment poussé au plus ancien.
-    Forks : seulement ceux qui ont au moins un commit d'avance sur l'original,
-    c'est-à-dire ceux où il y a vraiment du travail à toi.
-    Le champ "repos" de config.json permet, par dépôt, de forcer une description
-    ("desc"), de déclarer une origine pour une copie non marquée comme fork
-    ("origin"), de masquer ("hide") ou de forcer l'affichage d'un fork ("show").
-    """
+    """Projets : dépôts publics non-forks, du plus récent au plus ancien.
+    Forks : seulement ceux qui ont au moins un commit d'avance sur l'original.
+    config.json > repos permet par dépôt : desc, origin, hide, show."""
     over = CFG.get("repos", {})
     repos = fetch(f"https://api.github.com/users/{USER}/repos?per_page=100&type=owner&sort=pushed")
     projects, forks = [], []
@@ -268,125 +386,138 @@ def select_repos():
             forks.append((r, o["origin"]))
         else:
             projects.append((r, None))
-    return projects[:CFG.get("max_projects", 6)], forks[:CFG.get("max_forks", 4)]
+    return projects[:CFG.get("max_projects", 6)], forks[:CFG.get("max_forks", 4)], len([r for r in repos if not r.get("private")])
 
 
-def card(idx, meta, origin, fork):
-    repo = meta["name"]
-    item = CFG.get("repos", {}).get(repo, {})
-    langs = fetch(f"https://api.github.com/repos/{USER}/{repo}/languages")
-    tag = f"FORK ← {origin}" if origin else ("FORK" if fork else "PUBLIC")
-    desc = item.get("desc") or meta.get("description") or "Pas encore de description."
-    lines = wrap(desc, 76)[:2]
-    pushed = meta["pushed_at"][:10]
-    w, h = 900, 200
-    tot = sum(langs.values()) or 1
-    shades = [OR, "#b9b4ac", "#bb4f23", "#6e6e6e", "#80361a"]
-    bar, leg, xx, lx = [], [], 30.0, 30
-    for i, (lang, b) in enumerate(sorted(langs.items(), key=lambda kv: -kv[1])[:5]):
-        bw = 840 * b / tot
-        bar.append(f'<rect x="{xx:.1f}" y="152" width="{bw:.1f}" height="8" fill="{shades[i]}"/>')
-        xx += bw
-        lbl = f"{lang.upper()} {100 * b / tot:.0f}%"
-        leg.append(f'<rect x="{lx}" y="174" width="10" height="10" fill="{shades[i]}"/>'
-                   f'<text x="{lx + 16}" y="184" font-family="{MONO}" font-size="15" fill="{GREY}">{x(lbl)}</text>')
-        lx += 16 + len(lbl) * 8.5 + 22
-    if not langs:
-        bar.append(f'<rect x="30" y="152" width="840" height="8" fill="{LINE}"/>')
-    text = "".join(f'<text x="30" y="{108 + i * 30}" font-family="Arial,\'Helvetica Neue\',sans-serif" font-size="21" fill="{WHITE}">{x(l)}</text>' for i, l in enumerate(lines))
-    tag_w = len(tag) * 10 + 24
-    body = f"""
-<rect width="{w}" height="{h}" rx="6" fill="{PANEL}"/>
-<rect x="0" y="0" width="8" height="{h}" fill="{OR}"/>
-<text x="30" y="40" font-family="{MONO}" font-weight="700" font-size="16" letter-spacing="2" fill="{OR}">{'F' if fork else 'P'}-{idx:02d}</text>
-<text x="96" y="40" font-family="{MONO}" font-size="16" fill="{GREY}">MAJ {pushed}</text>
-<rect x="{870 - tag_w}" y="20" width="{tag_w}" height="28" fill="none" stroke="{OR}" stroke-width="1.5"/>
-<text x="{870 - tag_w / 2}" y="40" text-anchor="middle" font-family="{MONO}" font-weight="700" font-size="15" fill="{OR}">{x(tag)}</text>
-<text x="30" y="76" font-family="{SANS}" font-weight="900" font-style="italic" font-size="30" letter-spacing="1" fill="{WHITE}">{x(repo.upper())}</text>
-{text}
-{''.join(bar)}
-{''.join(leg)}"""
-    name = f"card-{repo.lower()}.svg"
-    write(name, svg(w, h, body, f"{repo} : {desc}"))
-    return name, repo, desc
+def build_cards(items, fork):
+    out = []
+    for meta, origin in items:
+        name = meta["name"]
+        langs = fetch(f"https://api.github.com/repos/{USER}/{name}/languages")
+        tot = sum(langs.values()) or 1
+        desc = CFG.get("repos", {}).get(name, {}).get("desc") or meta.get("description") or "Pas encore de description."
+        out.append(dict(name=name, img=tile(meta, origin, fork, langs), desc=desc, origin=origin,
+                        langs=" · ".join(f"{k} {100 * v / tot:.0f} %" for k, v in sorted(langs.items(), key=lambda kv: -kv[1])[:3])))
+    return out
 
 
 # ---------------------------------------------------------------- README
 
-def readme(cards, forks):
-    def links(items):
-        return "\n".join(f'<a href="https://github.com/{USER}/{repo}"><img src="assets/{n}" alt="{x(repo)} : {x(d)}" width="100%"></a>'
-                         for n, repo, d in items)
+def shield(label, color, logo=None):
+    q = urllib.parse.quote(label.replace("-", "--").replace("_", "__"), safe="")
+    url = f"https://img.shields.io/badge/-{q}-{color}?style=for-the-badge&labelColor=0b0811"
+    if logo:
+        url += f"&logo={logo}&logoColor=dccbf5"
+    return f'<img src="{url}" alt="{x(label)}">'
 
-    stack = []
-    for gname, items in CFG["stack"].items():
-        stack.append(f'<img src="assets/stack/g-{gname.lower()}.svg" alt="{gname}" height="44"><br>')
-        stack.append("".join(f'<img src="assets/stack/{i}.svg" alt="{x(l)}" height="44">' for i, l in items) + "<br>")
+
+def grid(cards):
+    rows = []
+    for i in range(0, len(cards), 2):
+        cells = []
+        for c in cards[i:i + 2]:
+            credit = f'<br><sub>d\'après <a href="https://github.com/{c["origin"]}">{x(c["origin"])}</a></sub>' if c["origin"] else ""
+            cells.append(f'<td width="50%" valign="top"><a href="https://github.com/{USER}/{c["name"]}">'
+                         f'<img src="docs/{c["img"]}" width="100%" alt="{x(c["name"])}"></a><br>'
+                         f'<b><a href="https://github.com/{USER}/{c["name"]}">{x(c["name"])}</a></b>{credit}<br>'
+                         f'{x(c["desc"])}<br><sub>{x(c["langs"])}</sub></td>')
+        rows.append("<tr>\n" + "\n".join(cells) + "\n</tr>")
+    return "<table>\n" + "\n".join(rows) + "\n</table>"
+
+
+def readme(cards, forks, total, active, nrepos):
+    div = '<img src="docs/divider.png" width="100%" alt="">'
     site = CFG["site"]
-    fork_block = (f'\n<img src="assets/t-forks.svg" alt="Forks" width="100%">\n\n{links(forks)}\n'
+    badges = "\n".join([
+        f'<a href="https://github.com/{USER}?tab=followers"><img src="https://img.shields.io/github/followers/{USER}?style=for-the-badge&labelColor=0b0811&color=c06bff&label=followers" alt="Followers"></a>',
+        f'<a href="https://github.com/{USER}?tab=repositories"><img src="https://img.shields.io/badge/dépôts_publics-{nrepos}-c06bff?style=for-the-badge&labelColor=0b0811" alt="{nrepos} dépôts publics"></a>',
+        f'<img src="https://img.shields.io/badge/focus-{urllib.parse.quote(CFG["focus"])}-ff5fcf?style=for-the-badge&labelColor=0b0811" alt="Focus : {x(CFG["focus"])}">',
+        f'<a href="{site}"><img src="https://img.shields.io/badge/site-{urllib.parse.quote(site.split("//")[1].replace("-", "--"))}-c06bff?style=for-the-badge&labelColor=0b0811" alt="Site"></a>',
+    ])
+    cols = []
+    for group in CFG["stack"]:
+        parts = []
+        for gname, items in group.items():
+            parts.append(f"<b>{x(gname)}</b><br>\n" + "\n".join(shield(label, "c06bff", logo) for logo, label in items))
+        cols.append('<td width="50%" valign="top">\n' + "\n<br><br>\n".join(parts) + "\n</td>")
+    fork_block = (f"\n{div}\n\n## ◉ Forks\n\nDes projets d'autres personnes, sur lesquels j'ai travaillé. Le crédit revient d'abord à leurs auteurs.\n\n{grid(forks)}\n"
                   if forks else "")
-    return f"""<img src="assets/header.svg" alt="{x(CFG['name'])}, {x(CFG['role'])}" width="100%">
+    return f"""<div align="center">
 
-<p align="center">{x(CFG['bio'])}<br><b><a href="{site}">{x(site.split('//')[1])}</a></b></p>
-
-<img src="assets/t-activite.svg" alt="Activité" width="100%">
-<img src="assets/activity.svg" alt="Calendrier des contributions sur douze mois" width="100%">
-
-<img src="assets/t-projets.svg" alt="Projets" width="100%">
-
-{links(cards)}
-{fork_block}
-<img src="assets/t-stack.svg" alt="Stack" width="100%">
-
-{chr(10).join(stack)}
+<img src="docs/hero.png" alt="{x(CFG['name'])} : une planète à anneau au-dessus d'une grille, tramée en violet" width="100%">
 
 <br>
-<img src="assets/footer.svg" alt="{x(USER)}" width="100%">
+
+{badges}
+
+**{x(CFG['pitch'])}**
+
+### [⌂ {x(site.split('//')[1])}]({site}) &nbsp;·&nbsp; [▤ Mes dépôts](https://github.com/{USER}?tab=repositories)
+
+<sub>Visuels générés par <a href="scripts/generate.py"><b>scripts/generate.py</b></a> · style emprunté au README de <a href="https://github.com/{USER}/dither-guy"><b>Dither Guy</b></a> · <a href="#-crédits">crédits ↓</a></sub>
+
+</div>
+
+{div}
+
+## ◉ Activité
+
+<img src="docs/activity.png" width="100%" alt="Calendrier des contributions : {total} sur douze mois, {active} jours actifs">
+
+**{total}** contribution{'s' if total > 1 else ''} sur les douze derniers mois, réparties sur **{active}** jour{'s' if active > 1 else ''}. Recalculé chaque jour à partir du calendrier GitHub.
+
+{div}
+
+## ◉ Projets
+
+{grid(cards)}
+{fork_block}
+{div}
+
+## ◉ Stack
+
+<table>
+<tr>
+{chr(10).join(cols)}
+</tr>
+</table>
+
+{div}
+
+## ◉ Crédits
+
+- **Style** : repris du README de [Dither Guy](https://github.com/{USER}/dither-guy), lui-même un fork du projet de [Manoel Piovesan](https://github.com/manoelpiovesan/dither-guy), à qui revient l'idée de départ.
+- **Visuels** : dessins procéduraux originaux, tramés (Atkinson et Bayer) par [`scripts/generate.py`](scripts/generate.py).
+- **Police** : [VT323](https://fonts.google.com/specimen/VT323) de Peter Hull, sous [SIL Open Font License 1.1](fonts/OFL.txt).
+- **Badges** : [shields.io](https://shields.io), logos [Simple Icons](https://simpleicons.org) (CC0).
+
+<div align="center">
+
+<sub>Mis à jour automatiquement chaque jour par une GitHub Action.</sub>
+
+{div}
+
+</div>
 """
 
 
 def main():
-    header()
-    title("t-activite.svg", "01", "ACTIVITÉ", "活动")
-    title("t-projets.svg", "02", "PROJETS", "项目")
-    title("t-forks.svg", "03", "FORKS", "分支")
-    title("t-stack.svg", "04", "STACK", "技术")
-    for gname, items in CFG["stack"].items():
-        group(gname)
-        for icon, label in items:
-            badge(icon, label)
-    footer()
-
-    try:
-        activity(contributions())
-    except Exception as e:  # on garde l'ancien SVG
-        print(f"activité non mise à jour : {e}", file=sys.stderr)
-
-    try:
-        projects, forks_sel = select_repos()
-    except Exception as e:  # sans la liste des dépôts, on ne touche pas au README
-        print(f"liste des dépôts indisponible, README conservé : {e}", file=sys.stderr)
+    hero()
+    divider()
+    try:  # sans les données GitHub, on ne touche ni au README ni aux images de données
+        days = contributions()
+        projects, forks_sel, nrepos = select_repos()
+        cards, forks = build_cards(projects, False), build_cards(forks_sel, True)
+    except Exception as e:
+        print(f"données GitHub indisponibles, README conservé : {e}", file=sys.stderr)
         return
-
-    def build(items, fork):
-        out = []
-        for i, (meta, origin) in enumerate(items, 1):
-            name = meta["name"]
-            try:
-                out.append(card(i, meta, origin, fork))
-            except Exception as e:
-                print(f"carte {name} non mise à jour : {e}", file=sys.stderr)
-                if (ASSETS / f"card-{name.lower()}.svg").exists():
-                    out.append((f"card-{name.lower()}.svg", name, meta.get("description") or ""))
-        return out
-
-    cards, forks = build(projects, False), build(forks_sel, True)
-    used = {n for n, _, _ in cards + forks}
-    for old in ASSETS.glob("card-*.svg"):  # cartes des dépôts qui ne sont plus affichés
+    total, active = activity(days)
+    used = {c["img"] for c in cards + forks}
+    for old in DOCS.glob("tile-*.png"):
         if old.name not in used:
             old.unlink()
-    (ROOT / "README.md").write_text(readme(cards, forks), encoding="utf-8", newline="\n")
-    print(f"ok : {len(cards)} projets, {len(forks)} forks")
+    (ROOT / "README.md").write_text(readme(cards, forks, total, active, nrepos), encoding="utf-8", newline="\n")
+    print(f"ok : {len(cards)} projets, {len(forks)} forks, {total} contributions")
 
 
 if __name__ == "__main__":

@@ -1,14 +1,10 @@
 {
   "user": "natachaaaaa",
   "name": "NATHAN C.",
-  "cjk": ["内", "森"],
-  "role": "DÉVELOPPEUR · FRANCE",
-  "tagline_cjk": "智 能 代 码 解 决 方 案",
-  "slogan": "THIS IS NATHAN. THIS IS CODE.",
+  "tagline": "développeur · apprend le C et le C++ · France",
+  "pitch": "J'apprends le C et le C++ (souhaitez-moi bonne chance) ; à côté, je fais du web, de l'infra auto-hébergée et des projets rétro qui clignotent.",
   "site": "https://ncombes.fr",
-  "since": "2021",
-  "focus": "C · C++",
-  "bio": "Développeur basé en France. En ce moment j'apprends le C et le C++ (souhaitez-moi bonne chance) ; à côté, je fais du web, un peu d'infra auto-hébergée et des projets rétro qui clignotent.",
+  "focus": "C / C++",
   "max_projects": 6,
   "max_forks": 4,
   "repos": {
@@ -35,30 +31,34 @@
       "desc": "Fork de Sentinel Tickets pour relier un système de tickets Discord à GLPI. En cours."
     }
   },
-  "stack": {
-    "LANGAGES": [
-      ["c", "C"],
-      ["cplusplus", "C++"],
-      ["typescript", "TypeScript"],
-      ["javascript", "JavaScript"],
-      ["python", "Python"],
-      ["php", "PHP"]
-    ],
-    "WEB": [
-      ["laravel", "Laravel"],
-      ["vuedotjs", "Vue.js"],
-      ["nuxtdotjs", "Nuxt.js"],
-      ["nextdotjs", "Next.js"],
-      ["drupal", "Drupal"],
-      ["wordpress", "WordPress"]
-    ],
-    "INFRA": [
-      ["debian", "Debian"],
-      ["docker", "Docker"],
-      ["nginx", "Nginx"],
-      ["mysql", "MySQL"],
-      ["grafana", "Grafana"],
-      ["cloudflare", "Cloudflare"]
-    ]
-  }
+  "stack": [
+    {
+      "Langages": [
+        ["c", "C"],
+        ["cplusplus", "C++"],
+        ["typescript", "TypeScript"],
+        ["javascript", "JavaScript"],
+        ["python", "Python"],
+        ["php", "PHP"]
+      ]
+    },
+    {
+      "Web": [
+        ["laravel", "Laravel"],
+        ["vuedotjs", "Vue.js"],
+        ["nuxt", "Nuxt.js"],
+        ["nextdotjs", "Next.js"],
+        ["drupal", "Drupal"],
+        ["wordpress", "WordPress"]
+      ],
+      "Infra": [
+        ["debian", "Debian"],
+        ["docker", "Docker"],
+        ["nginx", "Nginx"],
+        ["mysql", "MySQL"],
+        ["grafana", "Grafana"],
+        ["cloudflare", "Cloudflare"]
+      ]
+    }
+  ]
 }
