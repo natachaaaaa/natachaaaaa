@@ -237,6 +237,8 @@ def card(idx, item, fork):
     langs = fetch(f"https://api.github.com/repos/{USER}/{repo}/languages")
     if fork and meta.get("parent"):
         tag = f"FORK ← {meta['parent']['full_name']}"
+    elif item.get("origin"):
+        tag = f"FORK ← {item['origin']}"
     else:
         tag = "PUBLIC"
     desc = item.get("desc") or meta.get("description") or ""

@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="200" viewBox="0 0 900 200" role="img" aria-label="sentinel-tickets-glpi : Fork de Sentinel Tickets pour relier un système de tickets Discord à GLPI. En cours."><title>sentinel-tickets-glpi : Fork de Sentinel Tickets pour relier un système de tickets Discord à GLPI. En cours.</title><style></style>
 <rect width="900" height="200" rx="6" fill="#1a1a1a"/>
 <rect x="0" y="0" width="8" height="200" fill="#EE6A2F"/>
-<text x="30" y="40" font-family="Consolas,'DejaVu Sans Mono',Menlo,monospace" font-weight="700" font-size="16" letter-spacing="2" fill="#EE6A2F">F-01</text>
+<text x="30" y="40" font-family="Consolas,'DejaVu Sans Mono',Menlo,monospace" font-weight="700" font-size="16" letter-spacing="2" fill="#EE6A2F">F-02</text>
 <text x="96" y="40" font-family="Consolas,'DejaVu Sans Mono',Menlo,monospace" font-size="16" fill="#8c8c8c">MAJ 2026-08-31</text>
 <rect x="536" y="20" width="334" height="28" fill="none" stroke="#EE6A2F" stroke-width="1.5"/>
 <text x="703.0" y="40" text-anchor="middle" font-family="Consolas,'DejaVu Sans Mono',Menlo,monospace" font-weight="700" font-size="15" fill="#EE6A2F">FORK ← ralphkb/sentinel-tickets</text>

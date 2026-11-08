@@ -7,6 +7,7 @@
 
 <img src="assets/t-projets.svg" alt="Projets" width="100%">
 
+<a href="https://github.com/natachaaaaa/capri-web"><img src="assets/card-capri-web.svg" alt="capri-web : Capri, la construction de personnalité d&#x27;Edgerunners 2, dans un onglet du navigateur : animée, à voix haute, avec outils MCP. Tout reste en local." width="100%"></a>
 <a href="https://github.com/natachaaaaa/JARVIS"><img src="assets/card-jarvis.svg" alt="JARVIS : Assistant vocal façon J.A.R.V.I.S. dans le navigateur, en Next.js, pensé pour la veille sécurité : CVE et exploits du moment, en direct." width="100%"></a>
 <a href="https://github.com/natachaaaaa/crt-page"><img src="assets/card-crt-page.svg" alt="crt-page : Effet d&#x27;écran CRT rétro en JavaScript vanilla et GSAP : scanlines, scintillement, distorsion et bavure lumineuse." width="100%"></a>
 <a href="https://github.com/natachaaaaa/C_tres_laid"><img src="assets/card-c_tres_laid.svg" alt="C_tres_laid : Mes entraînements en C. « C très laid », tu l&#x27;as le jeu de mots ?" width="100%"></a>
@@ -14,6 +15,7 @@
 
 <img src="assets/t-forks.svg" alt="Forks" width="100%">
 
+<a href="https://github.com/natachaaaaa/dither-guy"><img src="assets/card-dither-guy.svg" alt="dither-guy : Logiciel de dithering d&#x27;images en Python, inspiré de Dither Boy." width="100%"></a>
 <a href="https://github.com/natachaaaaa/sentinel-tickets-glpi"><img src="assets/card-sentinel-tickets-glpi.svg" alt="sentinel-tickets-glpi : Fork de Sentinel Tickets pour relier un système de tickets Discord à GLPI. En cours." width="100%"></a>
 
 <img src="assets/t-stack.svg" alt="Stack" width="100%">
