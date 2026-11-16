@@ -21,9 +21,9 @@
 
 ## ◉ Activité
 
-<img src="docs/activity.png" width="100%" alt="Calendrier des contributions : 50 sur douze mois, 25 jours actifs">
+<img src="docs/activity.png" width="100%" alt="Calendrier des contributions : 52 sur douze mois, 26 jours actifs">
 
-**50** contributions sur les douze derniers mois, réparties sur **25** jours. Recalculé chaque jour à partir du calendrier GitHub.
+**52** contributions sur les douze derniers mois, réparties sur **26** jours. Recalculé chaque jour à partir du calendrier GitHub.
 
 <img src="docs/divider.png" width="100%" alt="">
 
@@ -31,7 +31,7 @@
 
 <table>
 <tr>
-<td width="50%" valign="top"><a href="https://github.com/natachaaaaa/loyckttt"><img src="docs/tile-loyckttt.png" width="100%" alt="loyckttt"></a><br><b><a href="https://github.com/natachaaaaa/loyckttt">loyckttt</a></b><br>Pas encore de description.<br><sub>HTML 65 % · Vue 23 % · JavaScript 10 %</sub></td>
+<td width="50%" valign="top"><a href="https://github.com/natachaaaaa/loyckttt"><img src="docs/tile-loyckttt.png" width="100%" alt="loyckttt"></a><br><b><a href="https://github.com/natachaaaaa/loyckttt">loyckttt</a></b><br>Pas encore de description.<br><sub>HTML 64 % · Vue 24 % · JavaScript 11 %</sub></td>
 <td width="50%" valign="top"><a href="https://github.com/natachaaaaa/capri-web"><img src="docs/tile-capri-web.png" width="100%" alt="capri-web"></a><br><b><a href="https://github.com/natachaaaaa/capri-web">capri-web</a></b><br>Capri, la construction de personnalité d&#x27;Edgerunners 2, dans un onglet du navigateur : animée, à voix haute, avec outils MCP. Tout reste en local.<br><sub>TypeScript 95 % · CSS 5 % · Dockerfile 0 %</sub></td>
 </tr>
 <tr>
