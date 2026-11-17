@@ -5,7 +5,7 @@
 <br>
 
 <a href="https://github.com/natachaaaaa?tab=followers"><img src="https://img.shields.io/github/followers/natachaaaaa?style=for-the-badge&labelColor=0b0811&color=c06bff&label=followers" alt="Followers"></a>
-<a href="https://github.com/natachaaaaa?tab=repositories"><img src="https://img.shields.io/badge/dépôts_publics-13-c06bff?style=for-the-badge&labelColor=0b0811" alt="13 dépôts publics"></a>
+<a href="https://github.com/natachaaaaa?tab=repositories"><img src="https://img.shields.io/badge/dépôts_publics-14-c06bff?style=for-the-badge&labelColor=0b0811" alt="14 dépôts publics"></a>
 <img src="https://img.shields.io/badge/focus-C%20/%20C%2B%2B-ff5fcf?style=for-the-badge&labelColor=0b0811" alt="Focus : C / C++">
 <a href="https://ncombes.fr"><img src="https://img.shields.io/badge/site-ncombes.fr-c06bff?style=for-the-badge&labelColor=0b0811" alt="Site"></a>
 
@@ -21,9 +21,9 @@
 
 ## ◉ Activité
 
-<img src="docs/activity.png" width="100%" alt="Calendrier des contributions : 52 sur douze mois, 26 jours actifs">
+<img src="docs/activity.png" width="100%" alt="Calendrier des contributions : 53 sur douze mois, 27 jours actifs">
 
-**52** contributions sur les douze derniers mois, réparties sur **26** jours. Recalculé chaque jour à partir du calendrier GitHub.
+**53** contributions sur les douze derniers mois, réparties sur **27** jours. Recalculé chaque jour à partir du calendrier GitHub.
 
 <img src="docs/divider.png" width="100%" alt="">
 
@@ -31,16 +31,16 @@
 
 <table>
 <tr>
+<td width="50%" valign="top"><a href="https://github.com/natachaaaaa/opnragnarock"><img src="docs/tile-opnragnarock.png" width="100%" alt="opnragnarock"></a><br><b><a href="https://github.com/natachaaaaa/opnragnarock">opnragnarock</a></b><br>Open-Source virtual bass amp.<br><sub>Rust 54 % · CSS 23 % · JavaScript 16 %</sub></td>
 <td width="50%" valign="top"><a href="https://github.com/natachaaaaa/loyckttt"><img src="docs/tile-loyckttt.png" width="100%" alt="loyckttt"></a><br><b><a href="https://github.com/natachaaaaa/loyckttt">loyckttt</a></b><br>Pas encore de description.<br><sub>HTML 64 % · Vue 24 % · JavaScript 11 %</sub></td>
+</tr>
+<tr>
 <td width="50%" valign="top"><a href="https://github.com/natachaaaaa/capri-web"><img src="docs/tile-capri-web.png" width="100%" alt="capri-web"></a><br><b><a href="https://github.com/natachaaaaa/capri-web">capri-web</a></b><br>Capri, la construction de personnalité d&#x27;Edgerunners 2, dans un onglet du navigateur : animée, à voix haute, avec outils MCP. Tout reste en local.<br><sub>TypeScript 95 % · CSS 5 % · Dockerfile 0 %</sub></td>
-</tr>
-<tr>
 <td width="50%" valign="top"><a href="https://github.com/natachaaaaa/JARVIS"><img src="docs/tile-jarvis.png" width="100%" alt="JARVIS"></a><br><b><a href="https://github.com/natachaaaaa/JARVIS">JARVIS</a></b><br>Assistant vocal façon J.A.R.V.I.S. dans le navigateur, en Next.js, pensé pour la veille sécurité : CVE et exploits du moment, en direct.<br><sub>TypeScript 80 % · CSS 20 %</sub></td>
-<td width="50%" valign="top"><a href="https://github.com/natachaaaaa/crt-page"><img src="docs/tile-crt-page.png" width="100%" alt="crt-page"></a><br><b><a href="https://github.com/natachaaaaa/crt-page">crt-page</a></b><br>Effet d&#x27;écran CRT rétro en JavaScript vanilla et GSAP : scanlines, scintillement, distorsion et bavure lumineuse.<br><sub>JavaScript 58 % · CSS 32 % · HTML 10 %</sub></td>
 </tr>
 <tr>
+<td width="50%" valign="top"><a href="https://github.com/natachaaaaa/crt-page"><img src="docs/tile-crt-page.png" width="100%" alt="crt-page"></a><br><b><a href="https://github.com/natachaaaaa/crt-page">crt-page</a></b><br>Effet d&#x27;écran CRT rétro en JavaScript vanilla et GSAP : scanlines, scintillement, distorsion et bavure lumineuse.<br><sub>JavaScript 58 % · CSS 32 % · HTML 10 %</sub></td>
 <td width="50%" valign="top"><a href="https://github.com/natachaaaaa/C_tres_laid"><img src="docs/tile-c_tres_laid.png" width="100%" alt="C_tres_laid"></a><br><b><a href="https://github.com/natachaaaaa/C_tres_laid">C_tres_laid</a></b><br>Mes entraînements en C. « C très laid », tu l&#x27;as le jeu de mots ?<br><sub>C 100 %</sub></td>
-<td width="50%" valign="top"><a href="https://github.com/natachaaaaa/Modustry"><img src="docs/tile-modustry.png" width="100%" alt="Modustry"></a><br><b><a href="https://github.com/natachaaaaa/Modustry">Modustry</a></b><br>AfterNath Modustry : un multimod pour le jeu Mindustry.<br><sub>JavaScript 100 %</sub></td>
 </tr>
 </table>
 
