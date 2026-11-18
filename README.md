@@ -21,9 +21,9 @@
 
 ## ◉ Activité
 
-<img src="docs/activity.png" width="100%" alt="Calendrier des contributions : 53 sur douze mois, 27 jours actifs">
+<img src="docs/activity.png" width="100%" alt="Calendrier des contributions : 54 sur douze mois, 27 jours actifs">
 
-**53** contributions sur les douze derniers mois, réparties sur **27** jours. Recalculé chaque jour à partir du calendrier GitHub.
+**54** contributions sur les douze derniers mois, réparties sur **27** jours. Recalculé chaque jour à partir du calendrier GitHub.
 
 <img src="docs/divider.png" width="100%" alt="">
 
@@ -31,7 +31,7 @@
 
 <table>
 <tr>
-<td width="50%" valign="top"><a href="https://github.com/natachaaaaa/opnragnarock"><img src="docs/tile-opnragnarock.png" width="100%" alt="opnragnarock"></a><br><b><a href="https://github.com/natachaaaaa/opnragnarock">opnragnarock</a></b><br>Open-Source virtual bass amp.<br><sub>Rust 54 % · CSS 23 % · JavaScript 16 %</sub></td>
+<td width="50%" valign="top"><a href="https://github.com/natachaaaaa/opnragnarock"><img src="docs/tile-opnragnarock.png" width="100%" alt="opnragnarock"></a><br><b><a href="https://github.com/natachaaaaa/opnragnarock">opnragnarock</a></b><br>Open-Source virtual bass amp.<br><sub>Rust 56 % · CSS 23 % · JavaScript 15 %</sub></td>
 <td width="50%" valign="top"><a href="https://github.com/natachaaaaa/loyckttt"><img src="docs/tile-loyckttt.png" width="100%" alt="loyckttt"></a><br><b><a href="https://github.com/natachaaaaa/loyckttt">loyckttt</a></b><br>Pas encore de description.<br><sub>HTML 64 % · Vue 24 % · JavaScript 11 %</sub></td>
 </tr>
 <tr>
