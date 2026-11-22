@@ -5,7 +5,7 @@
 <br>
 
 <a href="https://github.com/natachaaaaa?tab=followers"><img src="https://img.shields.io/github/followers/natachaaaaa?style=for-the-badge&labelColor=0b0811&color=c06bff&label=followers" alt="Followers"></a>
-<a href="https://github.com/natachaaaaa?tab=repositories"><img src="https://img.shields.io/badge/dépôts_publics-14-c06bff?style=for-the-badge&labelColor=0b0811" alt="14 dépôts publics"></a>
+<a href="https://github.com/natachaaaaa?tab=repositories"><img src="https://img.shields.io/badge/dépôts_publics-15-c06bff?style=for-the-badge&labelColor=0b0811" alt="15 dépôts publics"></a>
 <img src="https://img.shields.io/badge/focus-C%20/%20C%2B%2B-ff5fcf?style=for-the-badge&labelColor=0b0811" alt="Focus : C / C++">
 <a href="https://ncombes.fr"><img src="https://img.shields.io/badge/site-ncombes.fr-c06bff?style=for-the-badge&labelColor=0b0811" alt="Site"></a>
 
@@ -21,9 +21,9 @@
 
 ## ◉ Activité
 
-<img src="docs/activity.png" width="100%" alt="Calendrier des contributions : 56 sur douze mois, 28 jours actifs">
+<img src="docs/activity.png" width="100%" alt="Calendrier des contributions : 87 sur douze mois, 29 jours actifs">
 
-**56** contributions sur les douze derniers mois, réparties sur **28** jours. Recalculé chaque jour à partir du calendrier GitHub.
+**87** contributions sur les douze derniers mois, réparties sur **29** jours. Recalculé chaque jour à partir du calendrier GitHub.
 
 <img src="docs/divider.png" width="100%" alt="">
 
