@@ -21,9 +21,9 @@
 
 ## ◉ Activité
 
-<img src="docs/activity.png" width="100%" alt="Calendrier des contributions : 91 sur douze mois, 31 jours actifs">
+<img src="docs/activity.png" width="100%" alt="Calendrier des contributions : 92 sur douze mois, 32 jours actifs">
 
-**91** contributions sur les douze derniers mois, réparties sur **31** jours. Recalculé chaque jour à partir du calendrier GitHub.
+**92** contributions sur les douze derniers mois, réparties sur **32** jours. Recalculé chaque jour à partir du calendrier GitHub.
 
 <img src="docs/divider.png" width="100%" alt="">
 
